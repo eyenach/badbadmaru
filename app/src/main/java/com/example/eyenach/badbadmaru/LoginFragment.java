@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.eyenach.badbadmaru.favorite.FavoriteFragment;
+
 public class LoginFragment extends Fragment {
 
     @Nullable
@@ -43,7 +45,7 @@ public class LoginFragment extends Fragment {
                 } else if(_userStr.equals("admin") && _passStr.equals("admin")){
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.main_view, new HomeFragment())
+                            .replace(R.id.main_view, new ImgViewFragment())
                             .addToBackStack(null)
                             .commit();
                     Log.d("LOGIN", "GOTO HOME");
