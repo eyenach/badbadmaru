@@ -45,7 +45,8 @@ public class LoginFragment extends Fragment {
                 } else if(_userStr.equals("admin") && _passStr.equals("admin")){
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.main_view, new ImgViewFragment())
+//                            .replace(R.id.main_view, new ImgViewFragment())
+                            .replace(R.id.main_view, new FavoriteFragment())
                             .addToBackStack(null)
                             .commit();
                     Log.d("LOGIN", "GOTO HOME");
