@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.eyenach.badbadmaru.add_menu.AddMenuFragment;
 import com.example.eyenach.badbadmaru.favorite.FavoriteFragment;
 
 public class LoginFragment extends Fragment {
@@ -46,7 +47,8 @@ public class LoginFragment extends Fragment {
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
 //                            .replace(R.id.main_view, new ImgViewFragment())
-                            .replace(R.id.main_view, new FavoriteFragment())
+//                            .replace(R.id.main_view, new FavoriteFragment())
+                            .replace(R.id.main_view, new AddMenuFragment())
                             .addToBackStack(null)
                             .commit();
                     Log.d("LOGIN", "GOTO HOME");
