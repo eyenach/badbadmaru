@@ -9,9 +9,9 @@
     </style>
 
     <string-array name="type">
-        <item></item>
-        <item>ต้ม-แกง</item>
-        <item>ผัด-ทอด</item>
+        <item>กรุณาเลือกประเภทอาหาร</item>
+        <item>ต้ม - แกง</item>
+        <item>ผัด - ทอด</item>
         <item>อาหารจานเดียว</item>
     </string-array>
 

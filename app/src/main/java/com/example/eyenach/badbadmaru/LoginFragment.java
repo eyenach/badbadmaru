@@ -9,13 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.eyenach.badbadmaru.add_menu.AddMenuFragment;
-import com.example.eyenach.badbadmaru.favorite.FavoriteFragment;
+import com.example.eyenach.badbadmaru.add_recipe.AddMenuFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginFragment extends Fragment {
+
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
 
     @Nullable
     @Override
@@ -26,7 +33,11 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+
         initLoginBtn();
+        initRegisBtn();
     }
 
     public void initLoginBtn(){
@@ -34,28 +45,48 @@ public class LoginFragment extends Fragment {
         _loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText _user = getView().findViewById(R.id.login_user_id);
-                String _userStr = _user.getText().toString();
+                /*
+                EditText _email = getView().findViewById(R.id.login_email);
+                String _emailStr = _email.getText().toString();
 
-                EditText _password  = getView().findViewById(R.id.login_password);
-                String _passStr = _password.getText().toString();
+                EditText _password  = getView().findViewById(R.id.login_pwd);
+                String _passStr = _password.getText().toString(); */
 
-                if(_userStr.isEmpty() || _passStr.isEmpty()){
-                    Toast.makeText(getActivity(), "กรุณาระบุ username or password", Toast.LENGTH_SHORT).show();
-                    Log.d("LOGIN", "USER OR PASSWORD IS EMPTY");
-                } else if(_userStr.equals("admin") && _passStr.equals("admin")){
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
+                mAuth.signInWithEmailAndPassword("eye.nanchoo@gmail.com", "522210220").addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        mUser = mAuth.getCurrentUser();
+                        Log.d("LOGIN", "LOGIN WITH "+mUser.getUid());
+
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .addToBackStack(null)
+                                .replace(R.id.main_view, new AddMenuFragment())
+                                .commit();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "กรุณาลงทะเบียนก่อนเข้าใช้งาน", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    void initRegisBtn(){
+        TextView _regisBtn = getView().findViewById(R.id.login_resis_btn);
+        _regisBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
 //                            .replace(R.id.main_view, new ImgViewFragment())
 //                            .replace(R.id.main_view, new FavoriteFragment())
-                            .replace(R.id.main_view, new AddMenuFragment())
-                            .addToBackStack(null)
-                            .commit();
-                    Log.d("LOGIN", "GOTO HOME");
-                } else {
-                    Toast.makeText(getActivity(), "user and password ไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
-                    Log.d("LOGIN", "INVALID USER OR PASSWORD");
-                }
+                        .replace(R.id.main_view, new RegisterFragment())
+                        .addToBackStack(null)
+                        .commit();
+                Log.d("LOGIN", "GOTO REGISTER");
             }
         });
     }
