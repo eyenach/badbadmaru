@@ -1,6 +1,5 @@
 package com.example.eyenach.badbadmaru.add_recipe;
 
-import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.eyenach.badbadmaru.Model.Menu;
@@ -45,6 +43,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AddStepFragment extends Fragment {
 
+    StorageReference mStorageRef;
+
     FirebaseAuth mAuth;
     FirebaseFirestore myDB;
 
@@ -72,6 +72,9 @@ public class AddStepFragment extends Fragment {
         //open firebase
         myDB = FirebaseFirestore.getInstance();
 
+        //open firebaseStorage
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         //query data
         mySQL = getActivity().openOrCreateDatabase("my.db", MODE_PRIVATE, null);
         Cursor myCursor = mySQL.rawQuery("SELECT * FROM menu", null);
@@ -85,22 +88,11 @@ public class AddStepFragment extends Fragment {
             _ingStr = myCursor.getString(5);
             _imgStr = myCursor.getString(6);
 
-            prepareData();
+            //Writer's name
+            getWriter(uidUser);
+
+            initSubmitBtn();
         }
-    }
-
-    void prepareData() {
-        EditText step = getView().findViewById(R.id.step);
-        EditText link = getView().findViewById(R.id.step_link);
-
-        //Step info
-        stepStr = step.getText().toString();
-        linkStr = link.getText().toString();
-
-        //Writer's name
-        getWriter(uidUser);
-
-        initSubmitBtn();
     }
 
     void initSubmitBtn() {
@@ -108,14 +100,38 @@ public class AddStepFragment extends Fragment {
         _submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Set data to Mymenu
-                setMyMenu();
 
-                //Set data to Menu
-                setMenu();
+                EditText step = getView().findViewById(R.id.step);
+                EditText link = getView().findViewById(R.id.step_link);
+
+                //Step info
+                stepStr = step.getText().toString();
+                linkStr = link.getText().toString();
+
+                //Set data to Mymenu
+//                setMyMenu();
 
                 Log.d("ADD RECIPE", _nameStr + _descStr
                         + _typeStr + _timeStr + _ingStr + _imgStr + _writer);
+
+                Uri file = Uri.fromFile(new File(_imgStr));
+/*                StorageReference riversRef = storageRef.child("images/rivers.jpg");
+
+                riversRef.putFile(file)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Get a URL to the uploaded content
+                                String  downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                                Toast.makeText(getActivity(), downloadUrl, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(getActivity(), "ERROR", Toast.LENGTH_SHORT).show();
+                            }
+                        }); */
             }
         });
     }
@@ -154,6 +170,9 @@ public class AddStepFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("ADD STEP", "insert MyMenu");
+                        //Set data to Menu
+                        setMenu();
+                        Log.d("ADD STEP", "GOTO insert Menu");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override

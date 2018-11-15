@@ -36,7 +36,7 @@ public class ImgViewFragment extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        _imgBtn = getView().findViewById(R.id.choose_img);
+        _imgBtn = getView().findViewById(R.id.imvPhoto_choose);
         _imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

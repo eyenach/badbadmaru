@@ -61,7 +61,8 @@ public class LoginFragment extends Fragment {
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .addToBackStack(null)
-                                .replace(R.id.main_view, new AddMenuFragment())
+//                                .replace(R.id.main_view, new AddMenuFragment())
+                                .replace(R.id.main_view, new UploadImage())
                                 .commit();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
