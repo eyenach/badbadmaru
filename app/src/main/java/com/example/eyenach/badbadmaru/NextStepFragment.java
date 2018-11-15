@@ -1,8 +1,10 @@
 package com.example.eyenach.badbadmaru;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class NextStepFragment extends Fragment{
 
@@ -72,7 +77,18 @@ public class NextStepFragment extends Fragment{
     public void uploadFoto(Uri uriImage){
         Log.d("Upload","Name Image");
 
-        imgRef = storageRef.child("myphotos/"); //+ typeFood + nameFood
+        imgRef = storageRef.child("myphotos/dish2"); //+ typeFood + nameFood
+
+        Bitmap bmp = null;
+        try {
+            bmp = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uriImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMax(100);
@@ -81,7 +97,8 @@ public class NextStepFragment extends Fragment{
         progressDialog.show();
         progressDialog.setCancelable(false);
 
-        uploadTask = imgRef.putFile(uriImage);
+//        uploadTask = imgRef.putFile(uriImage);
+        uploadTask = imgRef.putBytes(data);
 
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override

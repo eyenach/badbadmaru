@@ -97,18 +97,22 @@ public class UploadImage extends Fragment {
                     image.setUriImage(uriImage);
 
                     try{
+
                         Bitmap _bitmap = BitmapFactory.decodeStream(
                                 getActivity()
                                         .getContentResolver()
                                         .openInputStream(uriImage)
                         );
 
-                        _imageView = getView().findViewById(R.id.imvPhoto);
-                        _imageView.setImageBitmap(_bitmap);
+//                        _imageView = getView().findViewById(R.id.imvPhoto);
+//                        _imageView.setImageBitmap(_bitmap);
 
                     } catch (FileNotFoundException e){
                         e.printStackTrace();
                         Toast.makeText(getActivity(), "File not Found", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        Log.d("Upload", "File too large");
                     }
 
                     _nextStep.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +127,8 @@ public class UploadImage extends Fragment {
 
                             NextStepFragment obj = new NextStepFragment();
                             obj.setArguments(bundle);
+
+                            Log.d("Upload", "GOTO NEXT");
 
                             getActivity().getSupportFragmentManager()
                                     .beginTransaction()
