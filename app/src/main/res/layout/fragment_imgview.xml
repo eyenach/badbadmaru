@@ -16,6 +16,13 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_photo" />
 
+        <EditText
+            android:id="@+id/imvPhoto_name"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="name_image"
+            android:layout_gravity="center"/>
+
         <Button
             android:id="@+id/imvPhoto_choose"
             android:layout_width="wrap_content"
@@ -24,10 +31,10 @@
             android:layout_gravity="center"/>
 
         <Button
-            android:id="@+id/imvPhoto_uplaod"
+            android:id="@+id/imvPhoto_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upload"
+            android:text="Next"
             android:layout_gravity="center"/>
 
         <TextView

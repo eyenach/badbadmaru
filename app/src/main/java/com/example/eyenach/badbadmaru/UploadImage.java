@@ -2,24 +2,34 @@ package com.example.eyenach.badbadmaru;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.eyenach.badbadmaru.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -32,8 +42,14 @@ public class UploadImage extends Fragment {
     UploadTask uploadTask;
     Uri uriImage;
 
-    Button _pickImage;
+    EditText _nameImage;
+    ImageView _imageView;
+    Button _pickImage, _nextStep;
     TextView _yourUrlImage;
+
+    String _nameImageStr;
+
+    Image image = new Image();
 
     @Nullable
     @Override
@@ -49,6 +65,7 @@ public class UploadImage extends Fragment {
         storageRef = storage.getReference();
 
         _pickImage = getView().findViewById(R.id.imvPhoto_choose);
+        _nextStep = getView().findViewById(R.id.imvPhoto_next);
         _yourUrlImage = getView().findViewById(R.id.imvPhoto_url);
 
         _pickImage.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +78,10 @@ public class UploadImage extends Fragment {
 
     public void chooseImage(){
         Intent photoIntent = new Intent(Intent.ACTION_PICK);
+        File _picDirect = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String _picPath = _picDirect.getPath();
+        Log.d("Upload", _picPath);
+
         photoIntent.setType("image/*");
         startActivityForResult(photoIntent, select);
     }
@@ -72,13 +93,51 @@ public class UploadImage extends Fragment {
             case select:
                 if(resultCode == RESULT_OK){
                     uriImage = data.getData();
-                    uploadFoto();
+
+                    image.setUriImage(uriImage);
+
+                    try{
+                        Bitmap _bitmap = BitmapFactory.decodeStream(
+                                getActivity()
+                                        .getContentResolver()
+                                        .openInputStream(uriImage)
+                        );
+
+                        _imageView = getView().findViewById(R.id.imvPhoto);
+                        _imageView.setImageBitmap(_bitmap);
+
+                    } catch (FileNotFoundException e){
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "File not Found", Toast.LENGTH_SHORT).show();
+                    }
+
+                    _nextStep.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            _nameImage = getActivity().findViewById(R.id.imvPhoto_name);
+                            _nameImageStr = _nameImage.getText().toString();
+
+                            //create Bundle
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("uriImage", image);
+
+                            NextStepFragment obj = new NextStepFragment();
+                            obj.setArguments(bundle);
+
+                            getActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, obj)
+                                    .commit();
+                        }
+                    });
                 }
         }
     }
 
     public void uploadFoto(){
-        imgRef = storageRef.child("myphotos/");
+        Log.d("Upload","Name Image : "+ _nameImageStr);
+
+/*        imgRef = storageRef.child("myphotos/");
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMax(100);
@@ -112,6 +171,6 @@ public class UploadImage extends Fragment {
 
                 _yourUrlImage.setText("Your Download URL : "+urlImage);
             }
-        });
+        }); */
     }
 }

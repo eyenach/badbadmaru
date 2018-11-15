@@ -1,4 +1,4 @@
-package com.example.eyenach.badbadmaru.Model;
+package com.example.eyenach.badbadmaru.model;
 
 public class Menu {
 

@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.eyenach.badbadmaru.Model.Menu;
+import com.example.eyenach.badbadmaru.model.Menu;
 import com.example.eyenach.badbadmaru.R;
 import java.io.File;
 import java.io.FileNotFoundException;
