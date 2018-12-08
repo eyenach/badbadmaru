@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 
 public class ImgViewFragment extends Fragment{
 
-    final  static int IMG_GALLERY_REQUEST = 1;
     ImageView imageView;
     Button _imgBtn;
 
@@ -36,54 +35,46 @@ public class ImgViewFragment extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        photoController();
+    }
+
+    public void photoController(){
         _imgBtn = getView().findViewById(R.id.imvPhoto_choose);
         _imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onGalleryClick(_imgBtn);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+
+                //Image's Path
+                File _picDirect = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                String _picPath = _picDirect.getPath();
+                Log.d("IMAGE", _picPath);
+
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "CHOOSE APP"), 1);
             }
         });
     }
 
-    public void onGalleryClick(View v){
-        Intent intent = new Intent(Intent.ACTION_PICK);
-
-        File _picDirect = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        String _picPath = _picDirect.getPath();
-
-        Uri uri = Uri.parse(_picPath);
-
-        intent.setDataAndType(uri, "image/*");
-
-        startActivityForResult(intent, IMG_GALLERY_REQUEST);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == getActivity().RESULT_OK){
+            try {
+                Uri uri = data.getData();
 
-            if(requestCode == IMG_GALLERY_REQUEST){
-                Uri imgUri = data.getData();
+                Bitmap bitmap = BitmapFactory.decodeStream(
+                        getActivity()
+                                .getContentResolver()
+                                .openInputStream(uri)
+                );
+                Bitmap bitmap1 = Bitmap.createScaledBitmap(bitmap, 800,600, true);
 
-                try{
-                    Bitmap _bitmap = BitmapFactory.decodeStream(
-                            getActivity()
-                                    .getContentResolver()
-                                    .openInputStream(imgUri)
-                    );
-
-                    //scale image from device
-                    Bitmap _bitmapScale = Bitmap.createScaledBitmap(_bitmap, 500, 500, true);
-
-                    imageView = getView().findViewById(R.id.imvPhoto);
-                    imageView.setImageBitmap(_bitmapScale);
-
-                } catch (FileNotFoundException e){
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "File not Found", Toast.LENGTH_SHORT).show();
-                }
-
+                imageView = getView().findViewById(R.id.imvPhoto);
+                imageView.setImageBitmap(bitmap1);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
