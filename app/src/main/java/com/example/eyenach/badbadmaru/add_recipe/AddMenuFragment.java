@@ -167,8 +167,11 @@ public class AddMenuFragment extends Fragment {
                                     .openInputStream(imgUri)
                     );
 
+                    //scale image from device
+                    Bitmap _bitmapScale = Bitmap.createScaledBitmap(_bitmap, 500, 500, true);
+
                     imageView = getView().findViewById(R.id.add_recipe_img);
-                    imageView.setImageBitmap(_bitmap);
+                    imageView.setImageBitmap(_bitmapScale);
                 } catch (FileNotFoundException e){
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "File not Found", Toast.LENGTH_SHORT).show();

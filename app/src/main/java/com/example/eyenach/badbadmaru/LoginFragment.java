@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eyenach.badbadmaru.add_recipe.AddMenuFragment;
+import com.example.eyenach.badbadmaru.favorite.FavoriteFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -61,8 +62,10 @@ public class LoginFragment extends Fragment {
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .addToBackStack(null)
+//                                .replace(R.id.main_view, new FavoriteFragment())
 //                                .replace(R.id.main_view, new AddMenuFragment())
-                                .replace(R.id.main_view, new UploadImage())
+//                                .replace(R.id.main_view, new UploadImage())
+                                .replace(R.id.main_view, new ImgViewFragment())
                                 .commit();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

@@ -73,8 +73,11 @@ public class ImgViewFragment extends Fragment{
                                     .openInputStream(imgUri)
                     );
 
+                    //scale image from device
+                    Bitmap _bitmapScale = Bitmap.createScaledBitmap(_bitmap, 500, 500, true);
+
                     imageView = getView().findViewById(R.id.imvPhoto);
-                    imageView.setImageBitmap(_bitmap);
+                    imageView.setImageBitmap(_bitmapScale);
 
                 } catch (FileNotFoundException e){
                     e.printStackTrace();
